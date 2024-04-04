@@ -22,8 +22,10 @@ The sensitivity matrix columns (N=120) are organized by the order of sensor elec
 | 2 | 1 | 3     |
 | 3 | 1    | 4    |
 | ...| ... | ... |
-| 120 | 15 | 16 |
+| 120 | 15 | 16 |  
 
+Below is a GIF animation of the normalized sensitivty maps obtained via the finite element method. These show which pixels have the highest sensitivity for a given change in capacitance between each electrode pair.
+![](https://github.com/dallonjp/ECT_App/blob/master/sensitivity-ezgif.com-speed.gif)
 ## Image Reconstruction
 Two reconstruction algorithms have been implemented in this application: linear back projection (LBP) and Tikhonov Regularization Back Projection (TRBP). Neither is more computationally taxing than the other. Before reading any capacitance values, the application loads the sensitivity matrix from the stored text file as an array of doubles. Once a list of capacitance values have been parsed from a Serial connection, the image is reconstructed using one of the selected algorithms. The resulting ``[120].[120,2500]=[2500]`` length list is then resized into a 50 x 50 array and the values mapped onto a bitmap image.  
 ## Sensor Calibration
