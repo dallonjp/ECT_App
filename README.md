@@ -12,8 +12,21 @@ The application uses the `` 'r' `` character at the beginning of the string to b
 The application uses a MxN matrix of values as the sensitivity map, where M is the square of the image dimension in pixels (50x50=2500) and N is the number of unique electrode pairings (120 for a 16 electrode sensor). This is stored as a .txt file and has the format:  
 ``
 {
-  {S12-1,S12-2,...,S12-2500},{S13-1,S13-2,...,S13-2500},...{S1516-1,S1516-2,...,S1516-2500}
+  {S12-1,S12-2,...,S12-2500},{S13-1,S13-2,...,S13-2500},...,{S1516-1,S1516-2,...,S1516-2500}
 }
-``
+``  
+The sensitivity matrix columns (N=120) are organized by the order of sensor electrode pair measurements- ``S12-1`` is the sensitivity of the 1st pixel for the 1-2 electrode pair, ``S12-2500`` is the sensitivity for the 2500th pixel of the 1-2 electrode pair, and so on until ``S1516-2500``, which is the sensitivity of the 2500th pixel for the final 15-16 electrode pair. These values are generated *a priori* using finite element methods. The order of the capacitance measurements must match the order of the columns in the sensitivity matrix to reconstruct an image.  
+| N | Measurement Electrode    | Excitation Electrode | 
+|---| -------- | ------- |
+| 1 | 1  | 2    |
+| 2 | 1 | 3     |
+| 3 | 1    | 4    |
+| ...| ... | ... |
+| 120 | 15 | 16 |
+
 ## Image Reconstruction
-Two reconstruction algorithms have been implemented in this application: linear back projection (LBP) and Tikhonov Regularization Back Projection (TRBP). Neither is more computationally taxing than the other. Before reading any capacitance values, the application loads the sensitivity matrix from the stored text file as an array of doubles. Once a list of capacitance values have been parsed from a Serial connection, the image is reconstructed using one of the selected algorithms. The resulting ``[120].[120,2500]=[2500]`` length list is then resized into a 50 x 50 array and the values mapped onto a bitmap image. 
+Two reconstruction algorithms have been implemented in this application: linear back projection (LBP) and Tikhonov Regularization Back Projection (TRBP). Neither is more computationally taxing than the other. Before reading any capacitance values, the application loads the sensitivity matrix from the stored text file as an array of doubles. Once a list of capacitance values have been parsed from a Serial connection, the image is reconstructed using one of the selected algorithms. The resulting ``[120].[120,2500]=[2500]`` length list is then resized into a 50 x 50 array and the values mapped onto a bitmap image.  
+## Sensor Calibration
+Prior to image reconstruction, all capacitance values are normalized with respect to previously captured low and high point calibrations of the sensor. Thus, before any imaging, the sensor should be calibrated by capturing the capacitance of each electrode pair with the sensor exposed to low dielectric strength materials/conditions for the low point, and high dielectric strength materials/conditions for the high point. For example, if the sensor was to be used to image two phase flow inside of a pipe, the pipe should be filled with the low dielectric strength material for the low point calibration, then emptied and filled with the high dielectric strength material for the high point. The application has two buttons in the GUI to accomplish this two-point calibration. The application will not produce tomographs without these calibration points.
+
+ 
